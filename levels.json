@@ -1,0 +1,89 @@
+{
+  "easy": [
+    {
+      "answer": "TREE",
+      "images": [
+        "img/Tree1.jpg",
+        "img/Tree2.jpg",
+        "img/Tree3.jpg",
+        "img/Tree4.jpg"
+      ]
+    },
+    {
+      "answer": "BOOK",
+      "images": [
+        "img/book1.jpg",
+        "img/book2.jpg",
+        "img/book3.jpg",
+        "img/book4.jpg"
+      ]
+    },
+    {
+      "answer": "CAT",
+      "images": [
+        "img/cat1.jpg",
+        "img/cat2.jpg",
+        "img/cat3.jpg",
+        "img/cat4.jpg"
+      ]
+    }
+  ],
+  "medium": [
+    {
+      "answer": "MONEY",
+      "images": [
+        "img/money1.jpg",
+        "img/money2.jpg",
+        "img/money3.jpg",
+        "img/money4.jpg"
+      ]
+    },
+    {
+      "answer": "MUSIC",
+      "images": [
+        "img/music1.jpg",
+        "img/music2.jpg",
+        "img/music3.jpg",
+        "img/music4.jpg"
+      ]
+    },
+    {
+      "answer": "OCEAN",
+      "images": [
+        "img/ocean1.jpg",
+        "img/ocean2.jpg",
+        "img/ocean3.jpg",
+        "img/ocean4.jpg"
+      ]
+    }
+  ],
+  "hard": [
+    {
+      "answer": "PYRAMID",
+      "images": [
+        "img/pyramid1.jpg",
+        "img/pyramid2.jpg",
+        "img/pyramid3.jpg",
+        "img/pyramid4.jpg"
+      ]
+    },
+    {
+      "answer": "FREEDOM",
+      "images": [
+        "img/freedom1.jpg",
+        "img/freedom2.jpg",
+        "img/freedom3.jpg",
+        "img/freedom4.jpg"
+      ]
+    },
+    {
+      "answer": "CATHEDRAL",
+      "images": [
+        "img/cathedral1.jpg",
+        "img/cathedral2.jpg",
+        "img/cathedral3.jpg",
+        "img/cathedral4.jpg"
+      ]
+    }
+  ]
+}

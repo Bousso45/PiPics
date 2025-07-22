@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>PiPics Game</title>
+  <link rel="stylesheet" href="style.css" />
+  
+</head>
+<body>
+
+  <!-- 💜 PiPics Difficulty Selection Screen -->
+  <div id="difficulty-screen" class="screen active">
+    <div class="logo">‧₊˚✧ PiPics ✧˚₊‧</div>
+    <div class="sound-toggle" id="sound-toggle" title="Toggle sound">🔊</div>
+
+    <!-- Add Pi Network Auth Button -->
+    <div id="pi-auth-container" class="pi-auth-container">
+      <button id="pi-auth-button" class="pi-auth-btn">
+        <img src="https://minepi.com/favicon.ico" alt="Pi Logo" class="pi-logo">
+        Sign in with Pi
+      </button>
+      <div id="pi-user-info" class="pi-user-info" style="display: none;">
+        <img id="pi-user-avatar" class="pi-avatar" src="">
+        <span id="pi-username"></span>
+      </div>
+    </div>
+
+    <h2 class="select-title">Choose Your Pi Path</h2>
+    <div class="difficulty-options">
+      <button class="difficulty-btn" data-mode="easy" disabled>🥜 Pi-nuts</button>
+      <button class="difficulty-btn" data-mode="medum" disabled>🚀 Pi-oneer</button>
+      <button class="difficulty-btn" data-mode="hard" disabled>🧠 Pi-brain</button>
+    </div>
+  </div>
+
+  <!-- 🔥 Game Screen -->
+  <div id="game-screen" class="screen">
+      <div class="game-container centered">
+
+      <!-- Top Bar - Add Pi User Info -->
+      <div class="top-bar">
+        <button class="back-btn" id="back-button" title="Back to menu">🠈 Back</button>
+        <div class="level-badge" id="level-number">1</div>
+        <div class="coin-counter">
+          <img src="coin.png" class="coin-icon" />
+          <span id="coin-count">314</span>
+          <span class="coin-plus">+</span>
+        </div>
+        <div id="game-pi-user" class="pi-game-user" style="display: none;">
+          <img id="game-user-avatar" class="pi-avatar" src="">
+        </div>
+      </div>
+
+      <!-- Image Grid -->
+      <div class="image-grid">
+        <img src="https://picsum.photos/id/101/200/200" class="game-image" />
+        <img src="https://picsum.photos/id/102/200/200" class="game-image" />
+        <img src="https://picsum.photos/id/103/200/200" class="game-image" />
+        <img src="https://picsum.photos/id/104/200/200" class="game-image" />
+      </div>
+
+      <!-- Answer Boxes -->
+      <div class="answer-boxes" id="answer-boxes">
+        <div class="answer-letter"></div>
+        <div class="answer-letter"></div>
+        <div class="answer-letter"></div>
+        <div class="answer-letter"></div>
+        <div class="answer-letter"></div>
+      </div>
+
+      <!-- Letter Buttons & Hint/Delete/Skip -->
+      <div class="letters-container">
+
+        <!-- Row 1: Letters + Hint -->
+        <div class="letters-row" id="letters-row-1">
+          <button class="letter-btn">A</button>
+          <button class="letter-btn">B</button>
+          <button class="letter-btn">C</button>
+          <button class="letter-btn">D</button>
+          <button class="letter-btn">E</button>
+          <button class="letter-btn">F</button>
+          <button class="hint-btn" id="hint-button" title="Hint">
+            <img src="hint.png" alt="Hint" />
+            <span class="cost">30</span>
+          </button>
+        </div>
+
+        <!-- Row 2: Letters + Delete -->
+        <div class="letters-row" id="letters-row-2">
+          <button class="letter-btn">G</button>
+          <button class="letter-btn">H</button>
+          <button class="letter-btn">I</button>
+          <button class="letter-btn">J</button>
+          <button class="letter-btn">K</button>
+          <button class="letter-btn">L</button>
+          <button class="delete-btn" id="delete-button" title="Delete">
+            <img src="delete.png" alt="Delete" />
+            <span class="cost">80</span>
+          </button>
+        </div>
+
+        <!-- Skip Button Row -->
+        <div class="skip-btn" title="Skip this level (100 coins)"> SKIP ⏭</div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 🔊 Sounds -->
+  <audio id="success-sound" src="success.mp3" preload="auto"></audio>
+  <audio id="error-sound" src="error.mp3" preload="auto"></audio>
+  <audio id="transition-sound" src="transition.mp3" preload="auto"></audio>
+  <audio id="tap-sound" src="tap.wav"></audio>
+  <audio id="remove-sound" src="remove.wav"></audio>
+  <audio id="hint-sound" src="hint.wav"></audio>
+  <audio id="delete-sound" src="delete.wav"></audio>
+  <audio id="select-sound" src="select.wav" preload="auto"></audio>
+
+  <!-- 📜 Script -->
+  <script src="script.js"></script>
+
+  <!-- Pi Network SDK -->
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (typeof Pi !== "undefined") {
+        Pi.init({ version: "2.0", sandbox: false });
+
+        const authButton = document.getElementById('pi-auth-button');
+        if (authButton) {
+          authButton.addEventListener('click', async () => {
+            try {
+              const scopes = ['username', 'payments', 'wallet_address'];
+              const auth = await Pi.authenticate(scopes, (payment) => {
+                console.log("🔁 Incomplete payment:", payment);
+              });
+
+              console.log("✅ Pi Auth Success:", auth);
+
+              // Hide login button
+              document.getElementById('pi-auth-button').style.display = 'none';
+
+              // Show username & avatar
+              document.getElementById('pi-username').textContent = auth.user.username;
+              document.getElementById('pi-user-avatar').src = auth.user.avatar;
+              document.getElementById('pi-user-info').style.display = 'flex';
+
+              // Also show in game screen
+              document.getElementById('game-user-avatar').src = auth.user.avatar;
+              document.getElementById('game-pi-user').style.display = 'flex';
+
+              // Optional: Allow game to start after login
+              document.querySelectorAll('.difficulty-btn').forEach(btn => btn.disabled = false);
+
+            } catch (err) {
+              console.error("❌ Pi Auth Failed:", err);
+              alert("Pi login failed: " + err.message);
+            }
+          });
+        }
+      } else {
+        alert("⚠️ Please open this game in the Pi Browser.");
+      }
+    });
+  </script>
+</body>
+</html>
