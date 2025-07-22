@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>PiPics Game</title>
   <link rel="stylesheet" href="style.css" />
-  
+  <!-- Pi Network SDK -->
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <script>
+    Pi.init({ version: "2.0" });
+  </script>
 </head>
 <body>
 
@@ -28,9 +32,9 @@
 
     <h2 class="select-title">Choose Your Pi Path</h2>
     <div class="difficulty-options">
-      <button class="difficulty-btn" data-mode="easy" disabled>🥜 Pi-nuts</button>
-      <button class="difficulty-btn" data-mode="medum" disabled>🚀 Pi-oneer</button>
-      <button class="difficulty-btn" data-mode="hard" disabled>🧠 Pi-brain</button>
+      <button class="difficulty-btn" data-mode="easy">🥜 Pi-nuts</button>
+      <button class="difficulty-btn" data-mode="medium">🚀 Pi-oneer</button>
+      <button class="difficulty-btn" data-mode="hard">🧠 Pi-brain</button>
     </div>
   </div>
 
@@ -121,48 +125,39 @@
   <!-- 📜 Script -->
   <script src="script.js"></script>
 
-  <!-- Pi Network SDK -->
-  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <!-- Initialize Pi SDK -->
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      if (typeof Pi !== "undefined") {
-        Pi.init({ version: "2.0", sandbox: false });
+    // Initialize Pi Network SDK
+    Pi.init({ version: "2.0", sandbox: false });
 
-        const authButton = document.getElementById('pi-auth-button');
-        if (authButton) {
-          authButton.addEventListener('click', async () => {
-            try {
-              const scopes = ['username', 'payments', 'wallet_address'];
-              const auth = await Pi.authenticate(scopes, (payment) => {
-                console.log("🔁 Incomplete payment:", payment);
-              });
+    // Auth button click handler
+    document.getElementById('pi-auth-button').addEventListener('click', function() {
+      Pi.authenticate(['username', 'payments', 'wallet_address'], function(auth) {
+        // Success callback
+        console.log('Pi Auth successful', auth);
 
-              console.log("✅ Pi Auth Success:", auth);
+        // Hide auth button and show user info
+        document.getElementById('pi-auth-button').style.display = 'none';
+        const userInfo = document.getElementById('pi-user-info');
+        userInfo.style.display = 'flex';
 
-              // Hide login button
-              document.getElementById('pi-auth-button').style.display = 'none';
+        // Set user info
+        document.getElementById('pi-username').textContent = auth.user.username;
+        document.getElementById('pi-user-avatar').src = auth.user.avatar;
 
-              // Show username & avatar
-              document.getElementById('pi-username').textContent = auth.user.username;
-              document.getElementById('pi-user-avatar').src = auth.user.avatar;
-              document.getElementById('pi-user-info').style.display = 'flex';
+        // Also show user in game screen
+        const gameUser = document.getElementById('game-pi-user');
+        gameUser.style.display = 'flex';
+        document.getElementById('game-user-avatar').src = auth.user.avatar;
 
-              // Also show in game screen
-              document.getElementById('game-user-avatar').src = auth.user.avatar;
-              document.getElementById('game-pi-user').style.display = 'flex';
+        // You can now use auth.accessToken for backend API calls
+        // and auth.user for user information
 
-              // Optional: Allow game to start after login
-              document.querySelectorAll('.difficulty-btn').forEach(btn => btn.disabled = false);
-
-            } catch (err) {
-              console.error("❌ Pi Auth Failed:", err);
-              alert("Pi login failed: " + err.message);
-            }
-          });
-        }
-      } else {
-        alert("⚠️ Please open this game in the Pi Browser.");
-      }
+      }, function(error) {
+        // Error callback
+        console.error('Pi Auth error', error);
+        alert('Pi Network authentication failed: ' + error.message);
+      });
     });
   </script>
 </body>
